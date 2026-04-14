@@ -1,0 +1,9 @@
+{
+  "created_at_utc": "2026-04-14T04:02:18.377660",
+  "latency_p50_ms": 7.85,
+  "latency_p95_ms": 69.29,
+  "latency_p99_ms": 69.29,
+  "cache_hit_rate": 0.0,
+  "ctr": 0.06349206349206349,
+  "completion_at_k_proxy": 0.0
+}

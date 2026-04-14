@@ -2,6 +2,11 @@ pandas
 numpy
 scikit-learn
 xgboost
+lightgbm
+catboost
+optuna
+mlflow
+redis
 fastapi
 uvicorn
 streamlit
@@ -11,3 +16,12 @@ matplotlib
 seaborn
 plotly
 scipy
+shap
+pydantic
+pydantic-settings
+faiss-cpu
+torch
+celery
+rq
+pytest
+pyarrow

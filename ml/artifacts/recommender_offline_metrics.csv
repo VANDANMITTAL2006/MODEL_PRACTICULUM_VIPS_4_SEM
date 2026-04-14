@@ -1,0 +1,2 @@
+samples,k,hit_at_k,precision_at_k,recall_at_k,ndcg_at_k,map_at_k,coverage,diversity,novelty,cold_start_hit_at_k,struggling_hit_at_k,cold_start_precision_at_k,cold_start_recall_at_k
+500.0,5.0,1.0,0.424,0.7066666666666667,0.6214187731580791,0.6264833333333334,1.0,1.0,0.8544,0.0,1.0,0.0,0.0

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Environment
+.env
+.env.local
+
+# ML artifacts and generated outputs
+ml/artifacts/*.pkl
+ml/artifacts/*.joblib
+ml/artifacts/*.bin
+ml/artifacts/*.pt
+ml/artifacts/*.onnx
+ml/artifacts/manifest_*.json
+ml/artifacts/retraining_report.json
+ml/artifacts/report_assets/
+
+# Data/event outputs
+data/events/*.csv
+data/events/*.txt
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

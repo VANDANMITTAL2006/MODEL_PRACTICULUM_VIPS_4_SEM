@@ -1,0 +1,38 @@
+{
+  "global": {
+    "samples": 500.0,
+    "k": 5.0,
+    "hit_at_k": 1.0,
+    "precision_at_k": 0.424,
+    "recall_at_k": 0.7066666666666667,
+    "ndcg_at_k": 0.6214187731580791,
+    "map_at_k": 0.6264833333333334,
+    "coverage": 1.0,
+    "diversity": 1.0,
+    "novelty": 0.8544,
+    "cold_start_hit_at_k": 0.0,
+    "struggling_hit_at_k": 1.0,
+    "cold_start_precision_at_k": 0.0,
+    "cold_start_recall_at_k": 0.0
+  },
+  "segment": {
+    "regular": {
+      "hit_at_k": 1.0,
+      "precision_at_k": 0.4398936170212766,
+      "recall_at_k": 0.7331560283687943,
+      "ndcg_at_k": 0.6378696494413455,
+      "map_at_k": 0.625354609929078,
+      "diversity": 1.0,
+      "novelty": 0.8882978723404256
+    },
+    "struggling": {
+      "hit_at_k": 1.0,
+      "precision_at_k": 0.3758064516129032,
+      "recall_at_k": 0.6263440860215053,
+      "ndcg_at_k": 0.5715354708797881,
+      "map_at_k": 0.6299059139784946,
+      "diversity": 1.0,
+      "novelty": 0.7516129032258064
+    }
+  }
+}

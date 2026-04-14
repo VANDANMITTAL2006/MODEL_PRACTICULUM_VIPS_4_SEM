@@ -1,0 +1,71 @@
+{
+  "dataset_path": "C:\\Users\\SRISHTI MITTAL\\OneDrive\\Desktop\\new model\\project\\data\\raw\\Student_Performance.csv",
+  "all_dataset_columns": [
+    "student_id",
+    "age",
+    "gender",
+    "learning_style",
+    "attendance",
+    "assignment_score",
+    "quiz_score",
+    "time_spent_hours",
+    "attempts",
+    "subject_strength",
+    "subject_weakness",
+    "previous_score",
+    "internet_access",
+    "parental_support",
+    "extracurricular",
+    "stress_level",
+    "engagement_score",
+    "consistency_score",
+    "learning_efficiency",
+    "final_score",
+    "cluster_label",
+    "predicted_score"
+  ],
+  "target_col": "final_score",
+  "selected_features": [
+    "quiz_score",
+    "time_spent_hours",
+    "attendance",
+    "engagement_score",
+    "consistency_score",
+    "previous_score",
+    "subject_weakness"
+  ],
+  "numeric_features": [
+    "quiz_score",
+    "time_spent_hours",
+    "attendance",
+    "engagement_score",
+    "consistency_score",
+    "previous_score"
+  ],
+  "categorical_features": [
+    "subject_weakness"
+  ],
+  "metrics": {
+    "mae": 3.6926900739683246,
+    "rmse": 4.5400386617919715,
+    "r2": 0.7218509241486418,
+    "train_rows": 400,
+    "test_rows": 100
+  },
+  "excluded_columns": [
+    "student_id",
+    "age",
+    "gender",
+    "learning_style",
+    "assignment_score",
+    "attempts",
+    "subject_strength",
+    "internet_access",
+    "parental_support",
+    "extracurricular",
+    "stress_level",
+    "learning_efficiency",
+    "cluster_label",
+    "predicted_score"
+  ]
+}

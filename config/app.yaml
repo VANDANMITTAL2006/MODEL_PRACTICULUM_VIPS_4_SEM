@@ -1,0 +1,21 @@
+app:
+  name: ai-personalized-learning
+  env: development
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  reload: true
+
+paths:
+  data_raw: data/raw/Student_Performance.csv
+  events: data/events/events.csv
+  artifact_dir: ml/artifacts
+
+recommender:
+  default_top_k: 5
+  ann_candidate_pool: 15
+
+monitoring:
+  emit_online_metrics: true
+  online_metrics_file: ml/artifacts/online_metrics.json

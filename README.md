@@ -1,83 +1,101 @@
-# AI Personalized Learning System
+﻿# AI Personalized Learning Platform
+
+Production-style ML system with clean boundaries between serving, ML lifecycle, data assets, and frontend applications.
+
+## Architecture
+
+- api/: FastAPI serving layer (core infra, schemas, service adapters)
+- ml/: model lifecycle (training, inference, monitoring, recommender, artifacts)
+- data/: raw inputs and event logs
+- frontend/: React app (primary) + legacy Streamlit app isolated under frontend/legacy/
+- scripts/: operational entry points (setup, reports, evaluations)
+- config/: runtime configuration templates
+- tests/: domain-oriented tests (api, ml, recommender)
+
+## Project Structure
+
+```text
+project/
+├── api/
+│   ├── core/
+│   ├── routes/
+│   ├── schemas/
+│   ├── services/
+│   └── main.py
+├── ml/
+│   ├── data/
+│   ├── training/
+│   ├── inference/
+│   ├── monitoring/
+│   ├── recommender/
+│   └── artifacts/
+├── data/
+│   ├── raw/
+│   └── events/
+├── frontend/
+│   ├── src/
+│   └── legacy/
+│       └── app.py
+├── scripts/
+├── config/
+└── tests/
+    ├── api/
+    ├── ml/
+    └── recommender/
+```
 
 ## Quick Start
 
-### 1. Install Dependencies
+1. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Generate Dataset
+2. Generate data and train
+
 ```bash
-python data/generate_dataset.py
+python ml/data/generate_dataset.py
+python ml/training/train_model.py
 ```
 
-### 3. Train Models
+3. Evaluate/tune/retrain recommender
+
 ```bash
-python models/train_model.py
+python ml/training/evaluate_recommender.py
+python ml/training/tune_recommender.py
+python ml/training/retraining_orchestrator.py
 ```
 
-### 4. Start Backend (Terminal 1)
+4. Start API
+
 ```bash
-uvicorn backend.main:app --reload
+uvicorn api.main:app --reload
 ```
 
-### 5. Start Frontend (Terminal 2)
+5. Start React frontend
+
 ```bash
-streamlit run frontend/app.py
+cd frontend
+npm install
+npm run dev
 ```
 
----
+Optional legacy UI
 
-## Project Structure
-```
-project/
-├── data/
-│   ├── generate_dataset.py    ← synthetic dataset generator
-│   ├── data_pipeline.py       ← preprocessing, feature engineering
-│   └── Student_Performance.csv
-├── models/
-│   ├── train_model.py         ← XGBoost + RandomForest + KMeans training
-│   ├── model.pkl              ← XGBoost (primary)
-│   ├── rf_model.pkl           ← Random Forest
-│   ├── scaler.pkl             ← StandardScaler
-│   ├── encoders.pkl           ← LabelEncoders
-│   ├── kmeans.pkl             ← clustering model
-│   └── cluster_mapping.pkl    ← cluster → label mapping
-├── backend/
-│   ├── main.py                ← FastAPI app (6 endpoints)
-│   └── recommender.py         ← hybrid recommendation engine
-├── frontend/
-│   └── app.py                 ← Streamlit UI (5 pages)
-├── requirements.txt
-└── setup_and_run.bat          ← Windows one-click setup
+```bash
+streamlit run frontend/legacy/app.py
 ```
 
----
+## Tests
 
-## API Endpoints
+```bash
+pytest -q
+```
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Root info |
-| GET | `/health` | Health check + model status |
-| POST | `/predict-performance` | Predict student's final score |
-| POST | `/recommend-content` | Hybrid content recommendations |
-| GET | `/student-profile/{id}` | Full student analytics |
-| POST | `/update-after-quiz` | Real-time adaptive update |
+## Data and Artifact Policy
 
----
-
-## ML Models
-
-| Model | Role |
-|-------|------|
-| XGBoost Regressor | Primary performance predictor |
-| Random Forest | Secondary / ensemble comparison |
-| KMeans (k=3) | Student segmentation |
-| KNN | Collaborative filtering |
-
-## Student Segments
-- ⚡ **Fast Learner** — high engagement + high score
-- 🔄 **Low Engagement** — medium score, low study time
-- ⚠️ **Struggling Learner** — low score, high attempts
+- Input dataset: data/raw/Student_Performance.csv
+- Event logs: data/events/events.csv
+- Model binaries/metrics: ml/artifacts/
+- Heavy generated outputs are excluded by .gitignore
