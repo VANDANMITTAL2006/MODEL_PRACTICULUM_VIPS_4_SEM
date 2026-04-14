@@ -21,7 +21,7 @@ export async function analyzeUser(data = {}) {
 
     return responseData;
   } catch (error) {
-    console.error("analyzeUser API failed", error);
+    console.error("API Error:", error);
     throw error;
   }
 }

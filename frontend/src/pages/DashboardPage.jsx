@@ -3,19 +3,18 @@ import { useLearningStore } from "../store/useLearningStore";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const prediction = useLearningStore((state) => state.prediction);
-  const recommendations = useLearningStore((state) => state.recommendations);
-  const recommendationCards = useLearningStore((state) => state.recommendationCards);
-  const loading = useLearningStore((state) => state.loading);
-  const error = useLearningStore((state) => state.error);
-  const userInput = useLearningStore((state) => state.userInput);
-  const analyzeUser = useLearningStore((state) => state.analyzeUser);
+  const state = useLearningStore((store) => store);
+  const prediction = state.prediction;
+  const recommendations = state.recommendations;
+  const recommendationCards = state.recommendationCards;
+  const loading = state.loading;
+  const error = state.error;
+  const userInput = state.userInput;
+  const analyzeUser = state.analyzeUser;
 
-  const hasData = Boolean(prediction && recommendations.length > 0);
-  const predictedScore = Number(prediction?.predicted_score ?? 0);
-  const riskLevel = prediction?.risk_level ?? "medium";
+  console.log("State:", state);
 
-  if (!hasData) {
+  if (!prediction) {
     return (
       <section className="animate-rise">
         {error ? <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}</div> : null}
@@ -28,6 +27,23 @@ export default function DashboardPage() {
       </section>
     );
   }
+
+  if (!recommendations.length) {
+    return (
+      <section className="animate-rise">
+        {error ? <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{error}</div> : null}
+        <div className="glass rounded-2xl p-10 text-center shadow-card">
+          <p className="font-display text-2xl font-bold text-ink">Loading...</p>
+          <p className="mt-2 text-sm text-slate-600">
+            {loading ? "Preparing personalized recommendations." : "Waiting for recommendation data from the onboarding analysis."}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  const predictedScore = Number(prediction?.predicted_score ?? 0);
+  const riskLevel = prediction?.risk_level ?? "medium";
 
   return (
     <section className="animate-rise">
@@ -85,14 +101,16 @@ export default function DashboardPage() {
       <div className="mt-6 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
         <button
           type="button"
-          onClick={() => {
+          onClick={async () => {
             if (!userInput) {
               return;
             }
 
-            analyzeUser(userInput).catch((err) => {
-              console.error("manual dashboard refresh failed", err);
-            });
+            try {
+              await analyzeUser(userInput);
+            } catch (err) {
+              console.error("API Error:", err);
+            }
           }}
           className="font-semibold text-ink underline decoration-slate-400 underline-offset-4"
         >
