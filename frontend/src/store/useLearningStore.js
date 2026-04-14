@@ -1,56 +1,47 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { analyzeUser as analyzeUserApi, toAnalyzePayload } from "../services/recommendationApi";
+import { analyzeUser as analyzeUserApi } from "../services/recommendationApi";
 
 function buildInsight(prediction) {
   if (!prediction) {
     return "Complete onboarding to see personalized learning insights.";
   }
 
-  const score = Number(prediction.predicted_score || 0).toFixed(1);
+  const score = Number(prediction.predicted_score ?? 0).toFixed(1);
   if (prediction.risk_level === "high") {
     return `You are currently at risk. Focus on weak concepts and daily practice to lift your forecasted score of ${score}.`;
   }
+
   if (prediction.risk_level === "medium") {
     return `You are on track with room to improve. Consistent effort can push your forecasted score above ${score}.`;
   }
+
   return `Strong momentum detected. Keep reinforcing your strengths to maintain a forecasted score around ${score}.`;
 }
 
-function toCards(topics = [], prediction) {
-  return topics.map((topic, idx) => {
-    const predicted = Math.max(0, Math.min(100, Number(prediction?.predicted_score ?? 60) - 6 + idx * 2));
-    return {
-      id: String(topic).toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      title: String(topic),
-      reason:
-        prediction?.risk_level === "high"
-          ? "Priority topic to reduce near-term learning risk."
-          : prediction?.risk_level === "medium"
-            ? "Recommended to improve consistency in your weak areas."
-            : "Great next step to preserve your current momentum.",
-      predictedScore: Number(predicted.toFixed(1)),
-      riskLevel: predicted < 50 ? "high" : predicted <= 70 ? "medium" : "low",
-      estimatedMinutes: 10 + (idx % 4) * 5,
-    };
-  });
+function slugify(value, index) {
+  const slug = String(value || "recommendation")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${slug || "recommendation"}-${index + 1}`;
 }
 
-function splitSections(items) {
-  return {
-    recommended: items.slice(0, 6),
-    continueLearning: items.slice(0, 2),
-  };
-}
-
-function getRiskPanel(items) {
-  return items.reduce(
-    (acc, item) => {
-      acc[item.riskLevel].push(item.title);
-      return acc;
-    },
-    { high: [], medium: [], low: [] }
-  );
+function buildRecommendationCards(recommendations = [], prediction) {
+  return recommendations.map((recommendation, index) => ({
+    id: slugify(recommendation, index),
+    title: String(recommendation),
+    reason:
+      prediction?.risk_level === "high"
+        ? "Priority topic to reduce near-term learning risk."
+        : prediction?.risk_level === "medium"
+          ? "Recommended to improve consistency in your weak areas."
+          : "Great next step to preserve your current momentum.",
+    predictedScore: Number(prediction?.predicted_score ?? 0),
+    riskLevel: prediction?.risk_level ?? "medium",
+    estimatedMinutes: 10 + (index % 4) * 5,
+  }));
 }
 
 export const useLearningStore = create(
@@ -59,36 +50,36 @@ export const useLearningStore = create(
       userInput: null,
       prediction: null,
       recommendations: [],
-      recommendationSections: { recommended: [], continueLearning: [] },
-      riskTopics: { high: [], medium: [], low: [] },
+      recommendationCards: [],
       loading: false,
       error: "",
       activeTopicId: null,
       learningStats: {},
 
       setPrediction: (prediction) => set({ prediction }),
+
       setRecommendations: (recommendations) =>
-        set({
+        set((state) => ({
           recommendations,
-          recommendationSections: splitSections(recommendations),
-          riskTopics: getRiskPanel(recommendations),
-        }),
+          recommendationCards: buildRecommendationCards(recommendations, state.prediction),
+        })),
 
       analyzeUser: async (input) => {
-        const payload = toAnalyzePayload(input);
-        set({ loading: true, error: "", userInput: payload });
+        set({ loading: true, error: "", userInput: input });
 
         try {
-          const response = await analyzeUserApi(payload);
-          const cards = toCards(response?.recommendations || [], response?.prediction || null);
+          const response = await analyzeUserApi(input);
+          const prediction = response?.prediction || null;
+          const recommendations = Array.isArray(response?.recommendations) ? response.recommendations.filter(Boolean).map(String) : [];
+
           set({
-            prediction: response?.prediction || null,
-            recommendations: cards,
-            recommendationSections: splitSections(cards),
-            riskTopics: getRiskPanel(cards),
+            prediction,
+            recommendations,
+            recommendationCards: buildRecommendationCards(recommendations, prediction),
             loading: false,
             error: "",
           });
+
           return response;
         } catch (error) {
           console.error("analyzeUser action failed", error);
@@ -181,11 +172,11 @@ export const useLearningStore = create(
         userInput: state.userInput,
         prediction: state.prediction,
         recommendations: state.recommendations,
-        recommendationSections: state.recommendationSections,
-        riskTopics: state.riskTopics,
+        recommendationCards: state.recommendationCards,
         activeTopicId: state.activeTopicId,
         learningStats: state.learningStats,
       }),
     }
   )
 );
+

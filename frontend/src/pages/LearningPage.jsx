@@ -8,14 +8,14 @@ export default function LearningPage() {
   const navigate = useNavigate();
   const { itemId } = useParams();
 
-  const recommendations = useLearningStore((state) => state.recommendations);
+  const recommendationCards = useLearningStore((state) => state.recommendationCards);
   const learningStats = useLearningStore((state) => state.learningStats);
   const startLearningTopic = useLearningStore((state) => state.startLearningTopic);
   const updateLearningTimer = useLearningStore((state) => state.updateLearningTimer);
   const setTopicFeedback = useLearningStore((state) => state.setTopicFeedback);
   const completeLearningTopic = useLearningStore((state) => state.completeLearningTopic);
 
-  const currentItem = useMemo(() => recommendations.find((entry) => entry.id === itemId) || null, [itemId, recommendations]);
+  const currentItem = useMemo(() => recommendationCards.find((entry) => entry.id === itemId) || null, [itemId, recommendationCards]);
 
   if (!currentItem) {
     return (
